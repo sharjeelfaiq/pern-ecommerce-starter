@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =================== Enums ===================
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// =================== Admin ===================
+model Admin {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(255)
+  password     String   @db.VarChar(255)
+  permissions  String[] @default([])
+  lastEditedBy String?  @db.VarChar(255)
+  role         Role     @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([email])
+}
+
+// =================== User ===================
+model User {
+  id                     String   @id @default(uuid()) @db.Uuid
+  firstName              String   @db.VarChar(100)
+  lastName               String   @db.VarChar(100)
+  email                  String   @unique @db.VarChar(255)
+  password               String   @db.VarChar(255)
+  isEmailVerified        Boolean  @default(false)
+  isNewsletterSubscribed Boolean  @default(false)
+  role                   Role     @default(USER)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@index([email])
+}
+
+// =================== Category ===================
+model Category {
+  id               String        @id @default(uuid()) @db.Uuid
+  name             String        @unique @db.VarChar(100)
+  description      String?       @db.Text()
+  shortDescription String?       @db.VarChar(255)
+  slug             String?       @unique @db.VarChar(255)
+  metaTitle        String?       @db.VarChar(70)
+  metaDescription  String?       @db.VarChar(160)
+  canonicalTag     String?       @db.VarChar(255)
+  breadcrumb       String?       @db.VarChar(255)
+  posterImageUrl   String?       @db.VarChar(512)
+  seoSchema        String?       @db.Text()
+  lastEditedBy     String?       @db.VarChar(255)
+  status           ContentStatus @default(PUBLISHED)
+  products         Product[]     @relation("CategoryProducts")
+  subcategories    Subcategory[] @relation("CategorySubcategories")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([name])
+  @@index([slug])
+}
+
+// =================== Subcategory ===================
+model Subcategory {
+  id               String        @id @default(uuid()) @db.Uuid
+  name             String        @db.VarChar(100)
+  description      String?       @db.Text()
+  shortDescription String?       @db.VarChar(255)
+  slug             String?       @unique @db.VarChar(255)
+  metaTitle        String?       @db.VarChar(70)
+  metaDescription  String?       @db.VarChar(160)
+  canonicalTag     String?       @db.VarChar(255)
+  breadcrumb       String?       @db.VarChar(255)
+  posterImageUrl   String?       @db.VarChar(512)
+  seoSchema        String?       @db.Text()
+  categoryId       String        @db.Uuid
+  lastEditedBy     String?       @db.VarChar(255)
+  status           ContentStatus @default(PUBLISHED)
+  category         Category      @relation(fields: [categoryId], references: [id], name: "CategorySubcategories", onDelete: Cascade)
+  products         Product[]     @relation("SubcategoryProducts")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([categoryId])
+  @@index([slug])
+}
+
+// =================== Product ===================
+model Product {
+  id               String        @id @default(uuid()) @db.Uuid
+  name             String        @db.VarChar(100)
+  description      String?       @db.Text()
+  shortDescription String?       @db.VarChar(255)
+  slug             String        @unique @db.VarChar(255)
+  metaTitle        String?       @db.VarChar(120)
+  metaDescription  String?       @db.VarChar(160)
+  canonicalTag     String?       @db.VarChar(255)
+  breadcrumb       String?       @db.VarChar(255)
+  posterImageUrl   String        @db.VarChar(512)
+  seoSchema        String?       @db.Text()
+  productImages    String[]      @default([])
+  price            Decimal       @default(0)
+  discountPrice    Decimal?      @default(0)
+  stock            Int           @default(0)
+  height           Decimal?      @default(0)
+  width            Decimal?      @default(0)
+  weight           Decimal?      @default(0)
+  color            String?       @db.VarChar(100)
+  pattern          String?       @db.VarChar(100)
+  composition      String?       @db.VarChar(255)
+  additionalInfo   String?       @db.Text()
+  measuringGuide   String?       @db.Text()
+  categoryId       String        @db.Uuid
+  subcategoryId    String        @db.Uuid
+  lastEditedBy     String?       @db.VarChar(255)
+  status           ContentStatus @default(PUBLISHED)
+  category         Category      @relation(fields: [categoryId], references: [id], name: "CategoryProducts", onDelete: Cascade)
+  subcategory      Subcategory   @relation(fields: [subcategoryId], references: [id], name: "SubcategoryProducts", onDelete: Cascade)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([name])
+  @@index([categoryId])
+  @@index([subcategoryId])
+  @@index([price])
+  @@index([slug])
+}
