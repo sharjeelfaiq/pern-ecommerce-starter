@@ -6,21 +6,28 @@ const { read, update, remove } = repository;
 const { validateUuid } = commonUtils;
 
 export const userServices = {
-  getUserList: async () => await read.users(),
+  getUserList: () => read.users(),
 
-  getUserById: async (id) => {
-    if (!validateUuid(id)) throw createError(400, "Invalid user id.");
-    return await read.userById(id);
+  getUserById: (id) => {
+    if (!validateUuid(id)) throw createError(400, "Invalid Uuid.");
+    return read.userById(id);
   },
 
   updateUserById: async (id, input) => {
-    if (!validateUuid(id)) throw createError(400, "Invalid user id.");
-    return await update.userById(id, input);
+    if (!validateUuid(id)) throw createError(400, "Invalid Uuid.");
+
+    const existingUser = await read.userById(id);
+    if (!existingUser) throw createError(404, "User does not exist.");
+
+    return update.userById(id, input);
   },
 
   removeUserById: async (id) => {
-    if (!validateUuid(id)) throw createError(400, "Invalid user id.");
-    await remove.userById(id);
-    return { message: "User deleted successfully" };
+    if (!validateUuid(id)) throw createError(400, "Invalid Uuid.");
+
+    const existingUser = await read.userById(id);
+    if (!existingUser) throw createError(404, "User does not exist.");
+
+    return remove.userById(id);
   },
 };

@@ -10,8 +10,8 @@ export const productResolvers = {
 
     getProductById: handleAsync(async (_parent, { id }) => productServices.getProductById(id)),
 
-    getProductByUrls: handleAsync(async (_parent, { input }) =>
-      productServices.getProductByUrls(input),
+    getProductBySlugs: handleAsync(async (_parent, { input }) =>
+      productServices.getProductBySlugs(input),
     ),
   },
 

@@ -6,32 +6,34 @@ const { write, read, update, remove } = repository;
 const { validateUuid } = commonUtils;
 
 export const subcategoryServices = {
-  createSubcategory: async (input) => {
-    const subcategory = await write.subcategory(input);
-    console.log("Subcategory created:", subcategory);
-    return subcategory;
-  },
+  createSubcategory: (input) => write.subcategory(input),
 
-  getSubcategoryList: async () => await read.subcategories(),
+  getSubcategoryList: () => read.subcategories(),
 
-  getSubcategoryById: async (id) => {
+  getSubcategoryById: (id) => {
     if (!validateUuid(id)) throw createError(400, "Invalid subcategory id.");
-    return await read.subcategoryById(id);
+    return read.subcategoryById(id);
   },
 
-  getSubcategoryByUrls: async (input) => {
-    const { categorySlug, subcategorySlug } = input;
-    return await read.subcategoryByUrls(categorySlug, subcategorySlug);
+  getSubcategoryBySlugs: (input) => {
+    return read.subcategoryBySlugs(input);
   },
 
   updateSubcategoryById: async (id, input) => {
     if (!validateUuid(id)) throw createError(400, "Invalid subcategory id.");
+
+    const existingSubcategory = await read.subcategoryById(id);
+    if (!existingSubcategory) throw createError(404, "Subcategory does not exist.");
+
     return await update.subcategoryById(id, input);
   },
 
   removeSubcategoryById: async (id) => {
     if (!validateUuid(id)) throw createError(400, "Invalid subcategory id.");
-    await remove.subcategoryById(id);
-    return { message: "Subcategory deleted successfully" };
+
+    const existingSubcategory = await read.subcategoryById(id);
+    if (!existingSubcategory) throw createError(404, "Subcategory does not exist.");
+
+    return remove.subcategoryById(id);
   },
 };

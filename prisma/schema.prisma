@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // =================== Enums ===================
@@ -57,7 +56,7 @@ model Category {
   name             String        @unique @db.VarChar(100)
   description      String?       @db.Text()
   shortDescription String?       @db.VarChar(255)
-  slug             String?       @unique @db.VarChar(255)
+  slug             String?       @db.VarChar(255)
   metaTitle        String?       @db.VarChar(70)
   metaDescription  String?       @db.VarChar(160)
   canonicalTag     String?       @db.VarChar(255)
@@ -81,7 +80,7 @@ model Subcategory {
   name             String        @db.VarChar(100)
   description      String?       @db.Text()
   shortDescription String?       @db.VarChar(255)
-  slug             String?       @unique @db.VarChar(255)
+  slug             String?       @db.VarChar(255)
   metaTitle        String?       @db.VarChar(70)
   metaDescription  String?       @db.VarChar(160)
   canonicalTag     String?       @db.VarChar(255)
@@ -106,7 +105,7 @@ model Product {
   name             String        @db.VarChar(100)
   description      String?       @db.Text()
   shortDescription String?       @db.VarChar(255)
-  slug             String        @unique @db.VarChar(255)
+  slug             String        @db.VarChar(255)
   metaTitle        String?       @db.VarChar(120)
   metaDescription  String?       @db.VarChar(160)
   canonicalTag     String?       @db.VarChar(255)
@@ -123,6 +122,7 @@ model Product {
   color            String?       @db.VarChar(100)
   pattern          String?       @db.VarChar(100)
   composition      String?       @db.VarChar(255)
+  isMotorized      Boolean       @default(false)
   additionalInfo   String?       @db.Text()
   measuringGuide   String?       @db.Text()
   categoryId       String        @db.Uuid

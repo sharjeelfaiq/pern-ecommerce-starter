@@ -4,7 +4,7 @@ import { ApolloServer } from "@apollo/server";
 import { typeDefs, resolvers } from "#modules/index.js";
 
 const requestLoggerPlugin = {
-  async requestDidStart(requestContext) {
+  requestDidStart(requestContext) {
     const { request } = requestContext;
     const operationName = request.operationName || "Unnamed";
     const query = request.query ? request.query.replace(/\s+/g, " ").trim() : "";
@@ -21,7 +21,7 @@ const requestLoggerPlugin = {
     console.groupEnd();
 
     return {
-      async willSendResponse({ response }) {
+      willSendResponse({ response }) {
         const status = response.http?.status || "OK";
         const payload = response.body?.singleResult || response.body || {};
         console.group(`[GraphQL Response] ${operationName}: ${status}`);

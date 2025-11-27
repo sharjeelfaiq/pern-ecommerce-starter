@@ -20,12 +20,12 @@ export const adminTypeDefs = gql`
 
   type Query {
     getAdminList: [Admin!]!
-    getAdminById(id: ID!): Admin!
+    getAdminById(id: ID!): Admin
   }
 
   type Mutation {
-    createAdmin(input: CreateAdminInput!): Admin!
-    updateAdminById(id: ID!, input: UpdateAdminByIdInput!): Admin!
-    removeAdminById(id: ID!): GenericResponse!
+    createAdmin(input: CreateAdminInput!): Admin
+    updateAdminById(id: ID!, input: UpdateAdminByIdInput!): Admin
+    removeAdminById(id: ID!): Admin
   }
 `;

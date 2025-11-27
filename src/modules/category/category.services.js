@@ -6,30 +6,32 @@ const { write, read, update, remove } = repository;
 const { validateUuid } = commonUtils;
 
 export const categoryServices = {
-  createCategory: async (input) => {
-    return await write.category(input);
+  createCategory: (input) => write.category(input),
+
+  getCategoryList: () => read.categories(),
+
+  getCategoryById: (id) => {
+    if (!validateUuid(id)) throw createError(400, "Invalid Uuid.");
+    return read.categoryById(id);
   },
 
-  getCategoryList: async () => await read.categories(),
-
-  getCategoryById: async (id) => {
-    if (!validateUuid(id)) throw createError(400, "Invalid category id.");
-    return await read.categoryById(id);
-  },
-
-  getCategoryByUrl: async (input) => {
-    const { slug } = input;
-    return await read.categoryByUrl(slug);
-  },
+  getCategoryBySlug: (input) => read.categoryBySlug(input),
 
   updateCategoryById: async (id, input) => {
-    if (!validateUuid(id)) throw createError(400, "Invalid category id.");
-    return await update.categoryById(id, input);
+    if (!validateUuid(id)) throw createError(400, "Invalid Uuid.");
+
+    const existingCategory = await get.categoryById(id);
+    if (!existingCategory) throw createError(404, "Category does not exist.");
+
+    return update.categoryById(id, input);
   },
 
   removeCategoryById: async (id) => {
-    if (!validateUuid(id)) throw createError(400, "Invalid category id.");
-    await remove.categoryById(id);
-    return { message: "Category deleted successfully" };
+    if (!validateUuid(id)) throw createError(400, "Invalid Uuid.");
+
+    const existingCategory = await read.categoryById(id);
+    if (!existingCategory) throw createError(404, "Category does not exist.");
+
+    return remove.categoryById(id);
   },
 };

@@ -98,11 +98,9 @@ export const authServices = {
     const { email } = input;
 
     const existingUser = await read.userByEmail(email);
-
-    if (!existingUser) throw createError(404, "User not found.");
+    if (!existingUser) throw createError(404, "User does not exist.");
 
     const resetToken = tokenUtils.generate({ id: existingUser.id }, "passwordResetToken");
-
     if (!resetToken) throw createError(500, "Failed to generate reset token.");
 
     const sentEmail = await sendEmail("reset-email", {
@@ -111,7 +109,6 @@ export const authServices = {
       resetToken,
       FRONTEND_URL,
     });
-
     if (!sentEmail) throw createError(500, "Failed to send reset password email.");
 
     return { message: "Reset password email sent successfully." };
@@ -123,15 +120,13 @@ export const authServices = {
     const { id } = tokenUtils.verify(resetToken);
 
     const existingUser = await read.userById(id);
-
-    if (!existingUser) throw createError(404, "User not found.");
+    if (!existingUser) throw createError(404, "User does not exist.");
 
     const hashedPassword = await bcryptUtils.hash(password, { rounds: 12 });
 
     const isPasswordUpdated = await update.userById(id, {
       password: hashedPassword,
     });
-
     if (!isPasswordUpdated) throw createError(500, "Failed to update password.");
 
     return { message: "Password updated successfully." };

@@ -10,11 +10,11 @@ export const userTypeDefs = gql`
 
   type Query {
     getUserList: [User!]!
-    getUserById(id: ID!): User!
+    getUserById(id: ID!): User
   }
 
   type Mutation {
-    updateUserById(id: ID!, input: UpdateUserByIdInput!): User!
-    removeUserById(id: ID!): GenericResponse!
+    updateUserById(id: ID!, input: UpdateUserByIdInput!): User
+    removeUserById(id: ID!): User
   }
 `;

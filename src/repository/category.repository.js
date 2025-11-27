@@ -21,7 +21,7 @@ export const categoryRepository = {
         },
       }),
 
-    categoryByUrl: (slug) =>
+    categoryBySlug: ({ slug }) =>
       prisma.category.findUnique({
         where: { slug },
         include: {

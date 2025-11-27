@@ -12,8 +12,8 @@ export const subcategoryResolvers = {
       subcategoryServices.getSubcategoryById(id),
     ),
 
-    getSubcategoryByUrls: handleAsync(async (_parent, { input }) =>
-      subcategoryServices.getSubcategoryByUrls(input),
+    getSubcategoryBySlugs: handleAsync(async (_parent, { input }) =>
+      subcategoryServices.getSubcategoryBySlugs(input),
     ),
   },
 

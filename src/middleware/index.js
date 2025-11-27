@@ -27,7 +27,7 @@ export const setupMiddleware = (app, apolloServer) => {
       express.json({ limit: "10mb" }),
       xss(), // sanitize input
       expressMiddleware(apolloServer, {
-        context: async ({ req, res }) => {
+        context: ({ req, res }) => {
           let user = null;
 
           const accessToken = req.cookies["accessToken"];

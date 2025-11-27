@@ -17,9 +17,11 @@ export const productTypeDefs = gql`
     discountPrice: Float!
     width: Float!
     height: Float!
+    weight: Float!
     color: String!
     pattern: String!
     composition: String!
+    isMotorized: Boolean!
     stock: Int!
     additionalInfo: String
     measuringGuide: String
@@ -46,9 +48,11 @@ export const productTypeDefs = gql`
     stock: Int
     width: Float
     height: Float
+    weight: Float!
     color: String
     pattern: String
     composition: String
+    isMotorized: Boolean!
     additionalInfo: String
     measuringGuide: String
     lastEditedBy: String
@@ -57,7 +61,7 @@ export const productTypeDefs = gql`
     subcategoryId: ID
   }
 
-  input GetProductByUrlsInput {
+  input GetProductBySlugsInput {
     categorySlug: String!
     subcategorySlug: String!
     productSlug: String!
@@ -65,13 +69,13 @@ export const productTypeDefs = gql`
 
   type Query {
     getProductList: [Product!]!
-    getProductById(id: ID!): Product!
-    getProductByUrls(input: GetProductByUrlsInput!): Product!
+    getProductById(id: ID!): Product
+    getProductBySlugs(input: GetProductBySlugsInput!): Product
   }
 
   type Mutation {
-    createProduct(input: CreateProductInput!): Product!
-    updateProductById(id: ID!, input: UpdateProductByIdInput!): Product!
-    removeProductById(id: ID!): GenericResponse!
+    createProduct(input: CreateProductInput!): Product
+    updateProductById(id: ID!, input: UpdateProductByIdInput!): Product
+    removeProductById(id: ID!): Product
   }
 `;

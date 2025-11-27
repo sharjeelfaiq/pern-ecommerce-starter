@@ -10,8 +10,8 @@ export const categoryResolvers = {
 
     getCategoryById: handleAsync(async (_parent, { id }) => categoryServices.getCategoryById(id)),
 
-    getCategoryByUrl: handleAsync(async (_parent, { input }) =>
-      categoryServices.getCategoryByUrl(input),
+    getCategoryBySlug: handleAsync(async (_parent, { input }) =>
+      categoryServices.getCategoryBySlug(input),
     ),
   },
 
